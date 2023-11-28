@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    h1 {
+      text-align: center;
+      padding: 23px;
+      background-color: rgb(115, 137, 184);
+      color: rgb(0, 0, 0);
+    }
+
+    .formstyle {
+      width: 300px;
+      height: 530px;
+      margin: auto;
+      border: 3px solid skyblue;
+      border-radius: 5px;
+      padding: 20px;
+    }
+
+    input {
+      width: 20px;
+      background-color: green;
+      color: rgb(255, 255, 255);
+      border: 3px solid gray;
+      border-radius: 5px;
+      padding: 26px;
+      margin: 5px;
+      font-size: 15px;
+    }
+
+    #quizContainer {
+      margin-top: 20px;
+      display: none;
+    }
+
+    #scoreContainer {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .answerButton {
+      width: 250px;
+      margin: 5px;
+      padding: 10px;
+      font-size: 15px;
+      background-color: blue;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #toggleButton {
+      margin-bottom: 10px;
+      background-color: orange;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #addQuestionContainer {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .addQuestionInput {
+      margin-bottom: 10px;
+      padding: 5px;
+      width: 100%;
+    }
+
+    .addQuestionButton {
+      background-color: green;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+  <head>
+    <title>Quiz</title>
+  </head>
+
+  <body>
+    <h1>Quiz</h1>
+
+    <div id="toggleButton">Toggle Menu</div>
+    <div id="menuContainer" class="menuContainer">
+      <button id="toggleQuiz">Leuke Quiz</button>
+      <button id="toggleAddQuestion">Stomme Rekenmachine</button>
+      <div id="addQuestionContainer" class="addQuestionContainer">
+        <input type="text" id="questionInput" class="addQuestionInput" placeholder="Enter the question" />
+        <input type="text" id="answer1Input" class="addQuestionInput" placeholder="Enter answer 1" />
+        <input type="text" id="answer2Input" class="addQuestionInput" placeholder="Enter answer 2" />
+        <input type="text" id="answer3Input" class="addQuestionInput" placeholder="Enter answer 3" />
+        <input type="text" id="answer4Input" class="addQuestionInput" placeholder="Enter answer 4" />
+        <select id="correctAnswerInput" class="addQuestionInput">
+          <option value="0">Answer 1</option>
+          <option value="1">Answer 2</option>
+          <option value="2">Answer 3</option>
+          <option value="3">Answer 4</option>
+        </select>
+        <button onclick="addQuestion()" class="addQuestionButton">Add Question</button>
+      </div>
+    </div>
+    <div id="menuContainer">
+      <ul class="menuList">
+        <li><a href="#" class="active"><i class="icon-user"></i> Profile</a></li>
+        <li><a href="#" id="toggleQuiz"><i class="icon-trophy"></i> leuke quiz</a></li>
+        <li><a href="#" id="toggleAddQuestion"><i class="icon-picture"></i> stomme rekenmachine</a></li>
+      </ul>
+    </div>
+
+    <div id="quizContainer">
+      <h3 id="vraagTekst"></h3>
+      <div id="antwoordLijst"></div>
+      <button onclick="volgendeVraag()">Volgende vraag</button>
+    </div>
+
+    <div id="scoreContainer">
+      <h3>Score</h3>
+      <p id="score"></p>
+    </div>
+
+    <div id="addQuestionContainer">
+      <h3>Add a Question</h3>
+      <input type="text" id="questionInput" class="addQuestionInput" placeholder="Enter the question" />
+      <input type="text" id="answerInput" class="addQuestionInput" placeholder="Enter the answer" />
+      <button onclick="addQuestion()" class="addQuestionButton">Add Question</button>
+    </div>
+
+    <script>
+      var currentQuestionIndex = 0;
+      var score = 0;
+
+      var questions = [
+        {
+          vraag: "Wat is de hoofdstad van Frankrijk?",
+          antwoorden: ["Parijs", "Londen", "Rome", "Madrid"],
+          juisteAntwoord: 0
+        },
+        {
+          vraag: "Wat is de grootste planeet in ons zonnestelsel?",
+          antwoorden: ["Jupiter", "Mars", "Saturnus", "Neptunus"],
+          juisteAntwoord: 0
+        },
+        {
+          vraag: "Hoeveel continenten zijn er op aarde?",
+          antwoorden: ["5", "6", "7", "8"],
+          juisteAntwoord: 2
+        },
+        { 
+
+vraag: "Wie had de laatste WK gewonnen?", 
+
+antwoorden: ["Frankrijk", "Ronaldo", "Argintinie", "Nederland"], 
+
+juisteAntwoord: "Argintinie", 
+
+}, 
+
+{ 
+
+vraag: "Welke kleur heeft een drakenfruit?", 
+
+antwoorden: ["Rood", "Groen", "roze", "Geel"], 
+
+juisteAntwoord: "roze", 
+
+}, 
+
+{ 
+
+vraag: "Hoeveel poten heeft een octopus?", 
+
+antwoorden: ["4", "6", "8", "een octopus heeft tentakels"], 
+
+juisteAntwoord: "een octopus heeft tentakels", 
+
+}, 
+
+{ 
+
+vraag: "Met welke codeertaal is deze quiz gemaakt?", 
+
+antwoorden: ["HTML", "JAVA", "Nederlands", "CSS"], 
+
+juisteAntwoord: "HTML", 
+
+}, 
+
+{ 
+
+vraag: "Wat is de eerste letter van het Griekse alfabet?", 
+
+antwoorden: ["beta", "omega", "alfa", "een octopus heeft tentakels"], 
+
+juisteAntwoord: "alfa", 
+
+}, 
+
+{ 
+
+vraag: "Wat is het ergste wat Jur Mesman heeft gedaan?", 
+
+antwoorden: [ 
+
+  "gemastrubeert in het schooltoilet", 
+
+  "met Jules gehad", 
+
+  "iemand aangereden op de fiets", 
+
+  "Een docent gebeten", 
+
+], 
+
+juisteAntwoord: "gemastrubeert in het schooltoilet", 
+
+}, 
+
+{ 
+
+vraag: "What is love?", 
+
+antwoorden: [ 
+
+  "ik zeg loyaliteit, is niet belangerijk", 
+
+  "baby don't hurt me", 
+
+  "fuck dagelijksHD ik stap eruit", 
+
+  "baby don't blur me", 
+
+], 
+
+juisteAntwoord: "baby don't hurt me", 
+
+}, 
+
+{ 
+
+vraag: "Wat voor pillen neemt twan in?", 
+
+antwoorden: ["ritalin", "cyanide", "MDMA", "oestrogeenpillen"], 
+
+juisteAntwoord: "ritalin", 
+
+}, 
+
+{ 
+
+vraag: "wie heeft Ukraine binnengevallen?", 
+
+antwoorden: ["Ronaldo", "Rusland", "Input", "Putin"], 
+
+juisteAntwoord: "Rusland", 
+
+}, 
+
+{ 
+
+vraag: "hoe heet Rens zijn wapen?", 
+
+antwoorden: ["Bazooka", "Sharkie", "Sharkgun", "Haai alarm"], 
+
+juisteAntwoord: "een octopus heeft tentakels", 
+
+}, 
+
+
+      ];
+
+      function toonVraag(index) {
+        var vraagTekst = document.getElementById("vraagTekst");
+        var antwoordLijst = document.getElementById("antwoordLijst");
+        var vraag = questions[index];
+
+        vraagTekst.innerHTML = vraag.vraag;
+
+        antwoordLijst.innerHTML = "";
+        for (var i = 0; i < vraag.antwoorden.length; i++) {
+          var button = document.createElement("button");
+          button.innerHTML = vraag.antwoorden[i];
+          button.className = "answerButton";
+          button.onclick = controleerAntwoord;
+          button.dataset.antwoordIndex = i;
+          antwoordLijst.appendChild(button);
+        }
+      }
+
+      function controleerAntwoord() {
+        var gekozenAntwoord = parseInt(this.dataset.antwoordIndex);
+        var juisteAntwoord = questions[currentQuestionIndex].juisteAntwoord;
+
+        if (gekozenAntwoord === juisteAntwoord) {
+          score++;
+        }
+
+        volgendeVraag();
+      }
+
+      function volgendeVraag() {
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex >= questions.length) {
+          toonScore();
+        } else {
+          toonVraag(currentQuestionIndex);
+        }
+      }
+
+      function toonScore() {
+        var scoreContainer = document.getElementById("scoreContainer");
+        var scoreTekst = document.getElementById("score");
+
+        scoreContainer.style.display = "block";
+        scoreTekst.innerHTML = "Je score: " + score + "/" + questions.length;
+      }
+
+      // Toggle menu
+      var toggleButton = document.getElementById("toggleButton");
+      var menuContainer = document.getElementById("menuContainer");
+
+      toggleButton.addEventListener("click", function() {
+        if (menuContainer.style.display === "none") {
+          menuContainer.style.display = "block";
+        } else {
+          menuContainer.style.display = "none";
+        }
+      });
+
+      // Toggle Quiz
+      var toggleQuizButton = document.getElementById("toggleQuiz");
+      var quizContainer = document.getElementById("quizContainer");
+
+      toggleQuizButton.addEventListener("click", function() {
+        if (quizContainer.style.display === "none") {
+          quizContainer.style.display = "block";
+          currentQuestionIndex = 0;
+          score = 0;
+          toonVraag(currentQuestionIndex);
+        } else {
+          quizContainer.style.display = "none";
+        }
+      });
+
+      // Toggle Add Question
+      var toggleAddQuestionButton = document.getElementById("toggleAddQuestion");
+      var addQuestionContainer = document.getElementById("addQuestionContainer");
+
+      toggleAddQuestionButton.addEventListener("click", function() {
+        if (addQuestionContainer.style.display === "none") {
+          addQuestionContainer.style.display = "block";
+        } else {
+          addQuestionContainer.style.display = "none";
+        }
+      });
+
+      function addQuestion() {
+        var questionInput = document.getElementById("questionInput");
+        var answerInput = document.getElementById("answerInput");
+        var question = questionInput.value;
+        var answer = answerInput.value;
+
+        if (question && answer) {
+          var newQuestion = {
+            vraag: question,
+            antwoorden: [answer],
+            juisteAntwoord: 0
+          };
+
+          questions.push(newQuestion);
+
+          questionInput.value = "";
+          answerInput.value = "";
+
+          alert("Question added successfully!");
+        } else {
+          alert("Please enter both the question and answer.");
+        }
+      }
+    </script>
+  </body>
+</html>
